@@ -26,6 +26,10 @@ double normalMemCpyOther2This(float ** gpu_ptrs, int num_gpus, int bytes_to_tran
              bytes_to_transfer_each/num_gpus,
                 cudaMemcpyDefault));
         }
+        cudaSetDevice(i);
+        cudaDeviceSynchronize();
+        cudaSetDevice(curr_gpu);
+        cudaDeviceSynchronize();
 
     }
     std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
@@ -43,6 +47,10 @@ double normalMemCpyThis2Other(float ** gpu_ptrs, int num_gpus, int bytes_to_tran
              bytes_to_transfer_each/num_gpus,
                 cudaMemcpyDefault));
         }
+        cudaSetDevice(i);
+        cudaDeviceSynchronize();
+        cudaSetDevice(curr_gpu);
+        cudaDeviceSynchronize();
 
     }
     std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
@@ -65,12 +73,16 @@ double normalMemCpyOther2ThisAsync(float ** gpu_ptrs, int num_gpus, int bytes_to
              bytes_to_transfer_each/num_gpus,
                 cudaMemcpyDefault, streams[i]));
         }
-
+        cudaSetDevice(i);
+        cudaDeviceSynchronize();
+        cudaSetDevice(curr_gpu);
+        cudaDeviceSynchronize();
+    }
+    
     for (int i = 0; i < num_gpus; i++) {
         CUDA_CHECK(cudaStreamSynchronize(streams[i]));
     }
-
-    }
+    
     std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> secs = end-start;
     return secs.count();
@@ -91,6 +103,10 @@ double normalMemCpyThis2OtherAsync(float ** gpu_ptrs, int num_gpus, int bytes_to
              bytes_to_transfer_each/num_gpus,
                 cudaMemcpyDefault, streams[i]));
         }
+        cudaSetDevice(i);
+        cudaDeviceSynchronize();
+        cudaSetDevice(curr_gpu);
+        cudaDeviceSynchronize();
 
     }
 
